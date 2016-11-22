@@ -18,6 +18,8 @@ def main(argv):
         elif opt == "-i":
             inputfile = arg
 
+    print 'Opening file ' + inputfile +' (specify -i to use other file)...'
+
     f =  open(inputfile)
     lines = f.read().split('>')[1:]
 
@@ -71,11 +73,13 @@ def main(argv):
 
         return path[::-1]
 
-
+    print 'Running Viterbi algorithm...'
     cons = [hydroViterbi(s) for s in seqs]
 
+    print 'Viterbi done.'
+    print 'Wrtting output to H3Q1_out.fa...'
     f =  open('H3Q1_out.fa', 'w')
-    for s in cons:
+    for i,s in enumerate(cons):
         f.writelines(s+'\n')
 
 
@@ -110,6 +114,26 @@ def main(argv):
     Ocount = Ocount[Ocount != 0]
     Mcount = Mcount[Mcount != 0]
 
+    '''
+
+    with open('O.csv', 'wb') as csvfile:
+        csvwrwite = csv.writer(csvfile, delimiter='\t',
+                                quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        for i in Ocount:
+            csvwrwite.writerow([i])
+    with open('I.csv', 'wb') as csvfile:
+        csvwrwite = csv.writer(csvfile, delimiter='\t',
+                                quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        for i in Icount:
+            csvwrwite.writerow([i])
+    with open('M.csv', 'wb') as csvfile:
+        csvwrwite = csv.writer(csvfile, delimiter='\t',
+                                quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        for i in Mcount:
+            csvwrwite.writerow([i])
+
+    '''
+
     print 'Length counts written to: distributions.csv'
     print 'Avg(O) :' + str(np.mean(Ocount))
     print 'Avg(I) :' + str(np.mean(Icount))
@@ -127,7 +151,6 @@ def main(argv):
         csvwrwite.writerow(['Length','Hydrophobic', 'Hydrophilic', 'Mixed'])
         for i in range(0, maxlen):
             csvwrwite.writerow([i+1,Ocount[i], Icount[i], Mcount[i]])
-
 
 
     print '--------------------------------------------------------------------'
@@ -159,6 +182,8 @@ def main(argv):
         M[a] = M[a]/float(Mtot)
 
     with open('frequencies.csv', 'wb') as csvfile:
+        print 'Amino acids frequencies written to: frequencies.csv'
+        print ''
         csvwrwite = csv.writer(csvfile, delimiter='\t',
                                 quotechar='|', quoting=csv.QUOTE_MINIMAL)
         csvwrwite.writerow(['Amino','Hydrophobic', 'Hydrophilic', 'Mixed'])
@@ -166,6 +191,7 @@ def main(argv):
         for a in aminos:
             print a + ': ' + '\t'+ str(O[a]) + '\t'+ str(I[a]) + '\t'+ str(M[a])
             csvwrwite.writerow([a,O[a], I[a], M[a]])
+
 
 
 

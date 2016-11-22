@@ -88,8 +88,11 @@ def sumlen (seqs):
     sumlen = sum([len(s) - K_LEN + 1 for s in seqs])
     return float(sumlen)
 
+#def getZScore(count, notcount, Ecount, Enots, lenCount, lenNot):
+#    return [(Nw/float(Nn) - lenCount/float(lenNot)/math.sqrt(lenCount/float(lenNot))) for (Nw, Nn, Ew, En) in zip(count, notcount, Ecount, Enots)]
+
 def getZScore(count, notcount, Ecount, Enots, lenCount, lenNot):
-    return [(Nw/float(Nn) - lenCount/float(lenNot)/math.sqrt(lenCount/float(lenNot))) for (Nw, Nn, Ew, En) in zip(count, notcount, Ecount, Enots)]
+    return [((Nw-Ew)/(Nn-En)) for (Nw, Nn, Ew, En) in zip(count, notcount, Ecount, Enots)]
 
 def main(argv):
     helpMsg = 'H3Q1.py -i <inputfile> -c <controlfile>'
